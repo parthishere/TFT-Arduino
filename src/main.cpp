@@ -93,6 +93,7 @@ void loop()
         }
         c = 'A';
         memset(cmdBuffer, 0, sizeof(cmdBuffer));
+        Serial.flush();
         break;
       }
 
@@ -120,6 +121,7 @@ void loop()
           c = 'A';
           memset(receivedData2, 0, sizeof(receivedData2));
           memset(cmdBuffer, 0, sizeof(cmdBuffer));
+          Serial.flush();
           break;
         }
       }
@@ -157,6 +159,7 @@ void loop()
 
           memset(rssi_int, 0, sizeof(rssi_int));
           memset(cmdBuffer, 0, sizeof(cmdBuffer));
+          Serial.flush();
           break;
         }
       }
@@ -170,10 +173,12 @@ void loop()
         batteryDraw(0, is_charging, 50);
         c = 'A';
         memset(cmdBuffer, 0, sizeof(cmdBuffer));
+        Serial.flush();
       }
 
       c = 'A';
       memset(cmdBuffer, 0, sizeof(cmdBuffer));
+      Serial.flush();
     }
   }
 }
