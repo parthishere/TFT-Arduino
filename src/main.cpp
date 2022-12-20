@@ -87,6 +87,10 @@ void loop()
         Serial.println("Cards number will be written");
         receivedData1 = Serial.read();
         Serial.println(receivedData1);
+        if (receivedData1 != 34 && receivedData1 != 20 && receivedData1 != 48)
+        {
+          break;
+        }
         c = 'A';
         memset(cmdBuffer, 0, sizeof(cmdBuffer));
         break;
