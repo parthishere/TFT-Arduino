@@ -56,6 +56,7 @@ void setup()
   tft.print("SGL");
   delay(3000);
   tft.fillScreen(BLACK);
+  modee();
 }
 
 char cmdBuffer[CMDBUFFER_SIZE] = "";
@@ -70,12 +71,6 @@ void loop()
   // Read the data description string from UART
   // Read the data description string from UART
 
-  tft.setCursor(90, 4);
-  tft.setTextSize(3);
-  tft.setTextColor(CYANN);
-  tft.print("SGL");
-
-  modee();
   while (Serial.available() > 0)
   {
     c = processCharInput(cmdBuffer, Serial.read());
