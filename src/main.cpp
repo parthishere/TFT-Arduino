@@ -81,6 +81,7 @@ void loop()
       // Full command received. Do your stuff here!
       if (strcmp("CARDS_NUM", cmdBuffer) == 0)
       {
+        receivedData1 = 0;
         while (!Serial.available())
           ;
 
@@ -100,67 +101,73 @@ void loop()
       else if (strcmp("RSSI", cmdBuffer) == 0)
       {
         // int temp = receivedData1;
-        while (!Serial.available())
-          ;
-        while (Serial.available() > 0)
+        memset(rssi_int, 0, sizeof(rssi_int));
+        if (receivedData1 != 0)
         {
-
           int receivedData2[receivedData1];
-
-          Serial.println(receivedData1);
-          Serial.println("RSSI will be written");
-          for (int i = 0; i < receivedData1; i++)
+          while (!Serial.available())
+            ;
+          while (Serial.available() > 0)
           {
-            if (i >= 0 && i < receivedData1)
+
+            Serial.println(receivedData1);
+            Serial.println("RSSI will be written");
+            for (int i = 0; i < receivedData1; i++)
             {
-              receivedData2[i] = Serial.read();
-              Serial.println(receivedData2[i]);
-              rssi_int[i] = map(receivedData2[i], 35, 45, 3, 0);
+              if (i >= 0 && i < receivedData1)
+              {
+                receivedData2[i] = Serial.read();
+                Serial.println(receivedData2[i]);
+                rssi_int[i] = map(receivedData2[i], 35, 45, 3, 0);
+              }
             }
+            c = 'A';
+            memset(receivedData2, 0, sizeof(receivedData2));
+            memset(cmdBuffer, 0, sizeof(cmdBuffer));
+            Serial.flush();
+            break;
           }
-          c = 'A';
-          memset(receivedData2, 0, sizeof(receivedData2));
-          memset(cmdBuffer, 0, sizeof(cmdBuffer));
-          Serial.flush();
-          break;
         }
       }
 
       else if (strcmp("CARD_DATA", cmdBuffer) == 0)
       {
-        while (!Serial.available())
-          ;
-        while (Serial.available() > 0)
+        if (receivedData1 != 0 && rssi_int[0] != 0)
         {
-          byte receivedData3[receivedData1][12];
-          Serial.println("Cards data will be written");
-          for (int i = 0; i < receivedData1; i++)
+          while (!Serial.available())
+            ;
+          while (Serial.available() > 0)
           {
-            for (int j = 0; j < 12; j++)
+            byte receivedData3[receivedData1][12];
+            Serial.println("Cards data will be written");
+            for (int i = 0; i < receivedData1; i++)
             {
+              for (int j = 0; j < 12; j++)
+              {
+                if (i >= 0 && i < receivedData1)
+                {
+                  receivedData3[i][j] = Serial.read();
+                  Serial.print(receivedData3[i][j], HEX);
+                  Serial.print(" ");
+                }
+                else
+                {
+                  break;
+                }
+              }
               if (i >= 0 && i < receivedData1)
               {
-                receivedData3[i][j] = Serial.read();
-                Serial.print(receivedData3[i][j], HEX);
-                Serial.print(" ");
-              }
-              else
-              {
-                break;
+                inputs((char *)receivedData3[i], i, (int)rssi_int[i]);
+                memset(receivedData3[i], 0, sizeof(receivedData3));
               }
             }
-            if (i >= 0 && i < receivedData1)
-            {
-              inputs((char *)receivedData3[i], i, (int)rssi_int[i]);
-              memset(receivedData3[i], 0, sizeof(receivedData3));
-            }
-          }
-          c = 'A';
+            c = 'A';
 
-          memset(rssi_int, 0, sizeof(rssi_int));
-          memset(cmdBuffer, 0, sizeof(cmdBuffer));
-          Serial.flush();
-          break;
+            memset(rssi_int, 0, sizeof(rssi_int));
+            memset(cmdBuffer, 0, sizeof(cmdBuffer));
+            Serial.flush();
+            break;
+          }
         }
       }
 
